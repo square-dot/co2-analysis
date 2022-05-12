@@ -1,3 +1,32 @@
-CO2 analysis ( this is a test )
 
-I counted `r sum(c(0, 1, 2, 6))` blue cars on the highway
+# CO2 analysis
+
+This is a presentation and a breakdown of the **CO2** consumption in the world.
+
+````{r}
+require(ggplot2)
+setwd("D:\\git\\co2-analysis")
+co2data <- read.csv("data.csv", fileEncoding="UTF-8-BOM")
+colnames(co2data)[1] <- 'Country.Name'
+co2data <- co2data[-c(3:4)]
+head(co2data)
+````
+
+
+```{r}
+dataflat <- data.frame(country = character(), code = character(), year = integer(), emissions = numeric())
+for (rownr in 1:nrow(co2data)){
+  strt = 32
+  for (colnr in strt:ncol(co2data)){
+    n <- (rownr - 1) * ncol(co2data) + colnr - strt + 1
+    dataflat[n, ] <- list(co2data[rownr, 1], co2data[rownr, 2], 1959 + colnr, co2data[rownr, colnr])
+  }
+}
+print(dataflat)
+````
+Printing the flattened results
+````{r}
+ggplot(dataflat, aes(x=year, y=emissions, color=country)) + geom_point() + theme(legend.position="none")
+````
+
+
